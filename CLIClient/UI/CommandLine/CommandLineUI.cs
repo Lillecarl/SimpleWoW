@@ -2,12 +2,15 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Client;
 using Client.Authentication;
 using Client.Chat;
 using Client.Chat.Definitions;
 using Client.World;
 using Client.World.Network;
+using Client.UI.CommandLine;
+using Client.UI.CommandLine.Properties;
 
 namespace Client.UI.CommandLine
 {
@@ -78,8 +81,12 @@ namespace Client.UI.CommandLine
                         )
                     );
 
-                // select a realm - default to the first realm if there is only one
-                index = worldServerList.Count == 1 ? 0 : -1;
+
+                index = Settings.Default.RealmID;
+
+                if (index == -1) // select a realm - default to the first realm if there is only one
+                    index = worldServerList.Count == 1 ? 0 : -1;
+
                 while (index > worldServerList.Count || index < 0)
                 {
                     Log("Choose a realm:  ");
@@ -112,7 +119,9 @@ namespace Client.UI.CommandLine
                 LogLine(string.Format("{0}\tCreate a new character. (NOT YET IMPLEMENTED)", index));
 
             int length = characterList.Length == 10 ? 10 : (characterList.Length + 1);
-            index = -1;
+
+            index = Settings.Default.CharID;
+
             while (index > length || index < 0)
             {
                 Log("Choose a character:  ");
@@ -125,11 +134,29 @@ namespace Client.UI.CommandLine
                 Game.World.SelectedCharacter = characterList[index];
                 // TODO: enter world
 
-                LogLine(string.Format("Entering pseudo-world with character {0}", Game.World.SelectedCharacter.Name));
+                if (Settings.Default.LagServer == 0)
+                {
+                    LogLine(string.Format("Entering pseudo-world with character {0}", Game.World.SelectedCharacter.Name));
 
-                OutPacket packet = new OutPacket(WorldCommand.CMSG_PLAYER_LOGIN);
-                packet.Write(Game.World.SelectedCharacter.GUID);
-                Game.SendPacket(packet);
+                    OutPacket packet = new OutPacket(WorldCommand.CMSG_PLAYER_LOGIN);
+                    packet.Write(Game.World.SelectedCharacter.GUID);
+                    Game.SendPacket(packet);
+                }
+                else
+                {
+                    LogLine(string.Format("Entering lagg nigger ass with character {0}", Game.World.SelectedCharacter.Name));
+
+
+                    for (ulong i = 0; i < Settings.Default.LagServer; ++i)
+                    {
+                        OutPacket packet1 = new OutPacket(WorldCommand.CMSG_CHAR_CUSTOMIZE);
+                        packet1.Write(Game.World.SelectedCharacter.GUID);
+                        Game.SendPacket(packet1);
+
+                        OutPacket packet2 = new OutPacket(WorldCommand.ClientEnumerateCharacters);
+                        Game.SendPacket(packet2);
+                    }
+                }
             }
             else
             {
