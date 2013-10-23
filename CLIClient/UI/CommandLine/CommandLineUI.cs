@@ -144,17 +144,28 @@ namespace Client.UI.CommandLine
                 }
                 else
                 {
-                    LogLine(string.Format("Entering lagg nigger ass with character {0}", Game.World.SelectedCharacter.Name));
+                    LogLine(string.Format("Entering lag mode with character {0}", Game.World.SelectedCharacter.Name));
 
 
                     for (ulong i = 0; i < Settings.Default.LagServer; ++i)
                     {
                         OutPacket packet1 = new OutPacket(WorldCommand.CMSG_CHAR_CUSTOMIZE);
                         packet1.Write(Game.World.SelectedCharacter.GUID);
+                        packet1.Write(Game.World.SelectedCharacter.Name);
+                        packet1.Write(0);
+                        packet1.Write(0);
+                        packet1.Write(0);
+                        packet1.Write(0);
+                        packet1.Write(0);
+                        packet1.Write(0);
                         Game.SendPacket(packet1);
 
-                        OutPacket packet2 = new OutPacket(WorldCommand.ClientEnumerateCharacters);
-                        Game.SendPacket(packet2);
+                        //Thread.Sleep(1000);
+
+                        OutPacket keelpack = new OutPacket(WorldCommand.ClientEnumerateCharacters);
+                        Game.SendPacket(keelpack);
+
+                        //Thread.Sleep(1000);
                     }
                 }
             }

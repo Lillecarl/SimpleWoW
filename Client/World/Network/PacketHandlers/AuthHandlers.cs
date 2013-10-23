@@ -78,6 +78,11 @@ namespace Client.World.Network
         [PacketHandler(WorldCommand.ServerCharacterEnumeration)]
         void HandleCharEnum(InPacket packet)
         {
+            if (charenumrecv)
+                return;
+
+            charenumrecv = true;
+
             byte count = packet.ReadByte();
 
             if (count == 0)

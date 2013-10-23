@@ -12,6 +12,8 @@ namespace Client.World.Network
     {
         WorldServerInfo ServerInfo;
 
+        public bool charenumrecv;
+
         private long transferred;
         public long Transferred { get { return transferred; } }
 
@@ -271,6 +273,8 @@ namespace Client.World.Network
 
             Interlocked.Add(ref transferred, data.Length);
             Interlocked.Add(ref sent, data.Length);
+
+            Game.UI.LogLine(string.Format("Sent packet {0}", packet.Header.Command));
         }
     }
 }
