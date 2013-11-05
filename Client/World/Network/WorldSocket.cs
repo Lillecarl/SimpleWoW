@@ -274,7 +274,7 @@ namespace Client.World.Network
             Interlocked.Add(ref transferred, data.Length);
             Interlocked.Add(ref sent, data.Length);
 
-            Game.UI.LogLine(string.Format("Sent packet {0}", packet.Header.Command));
+            //Game.UI.LogLine(string.Format("Sent packet {0}", packet.Header.Command));
         }
     }
 }
